@@ -38,7 +38,7 @@ document.write('\
                             </a>\
                         </li>\
                     </ul>\
-                    <p class="copyright text-muted">2017 | Sayan Sinha</p>\
+                    <p class="copyright text-muted">2018 | Sayan Sinha</p>\
                 </div>\
             </div>\
         </div>\
