@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="shortcut icon" href="../../img/cover.gif" type="image/x-icon">
+
+    <title>Sayan Sinha</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="../../vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Theme CSS -->
+    <link href="../../css/clean-blog-gsoc.min.css" rel="stylesheet">
+    <link href="../../css/clean-blog.min.css" rel="stylesheet">
+
+    <!-- Custom Fonts --> <link href="../../vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"> <link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic'
+    rel='stylesheet' type='text/css'> <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,40
+    0,300,600,700,800' rel='stylesheet' type='text/css'>
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+
+<body>
+ <script type="text/javascript" src="../../header.js"></script>
+    <!-- Page Header -->
+    <!-- Set your background image for this header on the line below. -->
+    <header class="intro-header" style="background-image: url('../../img/blog-bg.jpg'); background-attachment: fixed;">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <div class="site-heading">
+                        <h1>Blog</h1>
+                        <hr class="small">
+                        <span class="subheading">Google Summer of Code 2018</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1"> 
+            
+
+
+
+                <!-- Post Content -->
+                <article>
+                      <div class="col-lg-16 col-lg-offset-0 col-md-20 col-md-offset-1">
+
+                        <h2 class="section-heading">Week 1:2</h2>
+                        <div class="text-muted"><i>Tuesday, 29th May 2018.</i></div>
+                        <p>&nbsp&nbspGPU Computing encompasses a lot of concepts of parallel programming. My first two weeks into GSoC made me realise that not only did I lack some of the basic concepts but also that this platform was providing me with the excellent opportunity to learn and verify any knowledge I acquire.</p>
+
+                        <p>&nbsp&nbspIn the very beginning, I was working pretty much on my own, blind to the fact that now I am a part of an excellent community. Though I was getting stuck at various times, I was not much willing to speak up because I thought I would be disturbing my mentors too much, who have got other GSoC students to cater to and the responsibility of maintaining their Julia packages which were being used in the industry. But, such walls were broken when my primary mentor, <a href="https://github.com/simondanisch" target="_blank">Simon Danisch</a> himself messaged me that he realised that I was unable to seek proper help from the community. He asked me to ask him whatever doubts I had, however lame they might sound, for, it could be solved by my mentors in a matter of few minutes but would take me hours as I was just a beginner. Since then, even my mentor invested a lot of time and energy in my GSoC work. Hence, after the few initial days, this communication barrier broke and I figured out ways to get more help from the community.</p>
+
+                        <p>&nbsp&nbspMy work these two weeks mainly focussed on improving the implementation of generic matrix multiplication − incorporation of the tiling method, its optimisation and benchmarking. The tiling method breaks the parallel processing into blocks, each block supporting a particular number of parallel threads. While attempting to multiply two matrices, we compute the output in blocks. For this, we break the input matrices into corresponding rows of the first and columns of the second, and iteratively update the values in the output by summing up the results of multiplications of the blocks of the input matrices. The illustration helps sum up the procedure.</p>
+                        <img src="gemm2a.png"></img>
+
+                        <p>&nbsp&nbspA lot of problems were being encountered creating the Julia implementation. A major time was spent getting rid of the error which stated that a request for too many resources was being made. We tried figuring out the limit and tried to keep within it, yet we could not do away with the error. We went with an alternative approach but invested enough time trying to debug what was going wrong in the initial attempt. As requested by my mentor, I tried developing a "Minimum Working Example" using CUDAnative to reproduce the error, which could be posted to the community for a review. </p>
+
+                        <p>&nbsp&nbspAnother major issue faced was making proper use of <i>gpu_sub2ind</i>, a function which converts multidimensional indexing to a linear one, and is explicitly suited to a GPU. Initially, I was providing the linear indexing manually but thought using this function is more sensible as it makes the code easier to understand and extend. But this made the performance go downhill, and at times, the CPU outperformed the GPU.</p>
+
+                        <p>&nbsp&nbspHence, the benchmarking was performed without <i>gpu_sub2ind</i>. Currently these two issues remain, though we have alternate solutions in place. Along with that, now I am working on an improved version of the kernel. The benchmarking may be found <a href="https://gist.github.com/americast/edf0604ac2e9dd3dcb30762c8e47e9f5" target="_blank">here</a>. The work-in-progress pull request may be viewed <a href="https://github.com/JuliaGPU/GPUArrays.jl/pull/115", target="_blank">here</a>.</p>
+
+                        <div id="disqus_thread"></div>
+                        <script>
+
+                        /**
+                        *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+                        *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables*/
+                        
+                        var disqus_config = function () {
+                        this.page.url = "http://cse.iitkgp.ac.in/~sayan.sinha/blog/gsoc/post2.html";  // Replace PAGE_URL with your page's canonical URL variable
+                        this.page.identifier = "americast2"; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+                        };
+                        
+                        (function() { // DON'T EDIT BELOW THIS LINE
+                        var d = document, s = d.createElement('script');
+                        s.src = 'https://americast2.disqus.com/embed.js';
+                        s.setAttribute('data-timestamp', +new Date());
+                        (d.head || d.body).appendChild(s);
+                        })();
+                        </script>
+                        <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+
+                      </div>
+                </article>
+            </div>
+        </div>
+    </div>
+
+    <hr>
+
+    <hr>
+
+    <!-- Footer -->
+     <script type="text/javascript" src="../../footer.js"></script>
+    <!-- jQuery -->
+    <script src="../../vendor/jquery/jquery.min.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="../../vendor/bootstrap/js/bootstrap.min.js"></script>
+
+    <!-- Contact Form JavaScript -->
+    <script src="../../js/jqBootstrapValidation.js"></script>
+    <script src="../../js/contact_me.js"></script>
+
+    <!-- Theme JavaScript -->
+    <script src="../../js/clean-blog.min.js"></script>
+
+</body>
+
+</html>
