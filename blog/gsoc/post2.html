@@ -75,6 +75,10 @@
 
                         <p>&nbsp&nbspAnother major issue faced was making proper use of <i>gpu_sub2ind</i>, a function which converts multidimensional indexing to a linear one, and is explicitly suited to a GPU. Initially, I was providing the linear indexing manually but thought using this function is more sensible as it makes the code easier to understand and extend. But this made the performance go downhill, and at times, the CPU outperformed the GPU.</p>
 
+                        <p>&nbsp&nbspI also learnt the usage of the <i>@inbounds</i> macro from my mentor. It served two purposes for a GPU kernel. Using <i>@inbounds</i> prevented checking for bounds error, hence it meant faster processing. Along with that, bounds checking  has <i>throw</i> statements internally which also causes errors on a GPU. Hence, prevention of bounds checking is a necessity for GPU kernels.</p>
+                        
+                        <p>&nbsp&nbspI also checked out <a href="https://github.com/JuliaGPU/OpenCL.jl" target="_blank">OpenCL.jl</a> to verify the accuracy of some OpenCL kernels written in C. OpenCL.jl features writing launch codes in Julia, keeping the kernels in C. This makes creating launch codes extremely easy. I figured out very quickly the capacity of the C kernel using this package. I was stuck in developing proper launch code in C for some time and this package acted like a saviour!</p>
+
                         <p>&nbsp&nbspHence, the benchmarking was performed without <i>gpu_sub2ind</i>. Currently these two issues remain, though we have alternate solutions in place. Along with that, now I am working on an improved version of the kernel. The benchmarking may be found <a href="https://gist.github.com/americast/edf0604ac2e9dd3dcb30762c8e47e9f5" target="_blank">here</a>. The work-in-progress pull request may be viewed <a href="https://github.com/JuliaGPU/GPUArrays.jl/pull/115", target="_blank">here</a>.</p>
 
                         <div id="disqus_thread"></div>
