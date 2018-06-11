@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="shortcut icon" href="../../img/cover.gif" type="image/x-icon">
+
+    <title>Sayan Sinha</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="../../vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Theme CSS -->
+    <link href="../../css/clean-blog-gsoc.min.css" rel="stylesheet">
+    <link href="../../css/clean-blog.min.css" rel="stylesheet">
+
+    <!-- Custom Fonts --> <link href="../../vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"> <link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic'
+    rel='stylesheet' type='text/css'> <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,40
+    0,300,600,700,800' rel='stylesheet' type='text/css'>
+
+    <style>
+    img {
+        max-width: 100%;
+        height: auto;
+        width: auto\9; /* ie8 */
+    }
+    </style>
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+
+<body>
+ <script type="text/javascript" src="../../header.js"></script>
+    <!-- Page Header -->
+    <!-- Set your background image for this header on the line below. -->
+    <header class="intro-header" style="background-image: url('../../img/blog-bg.jpg'); background-attachment: fixed;">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <div class="site-heading">
+                        <h1>Blog</h1>
+                        <hr class="small">
+                        <span class="subheading">Google Summer of Code 2018</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1"> 
+            
+
+
+
+                <!-- Post Content -->
+                <article>
+                      <div class="col-lg-16 col-lg-offset-0 col-md-20 col-md-offset-1">
+
+                        <h2 class="section-heading">Week 3:4</h2>
+                        <div class="text-muted"><i>Monday, 11th June 2018.</i></div>
+                        <p>&nbsp&nbspThese two weeks showered on me an immense amount of knowledge. I came to know various new topics which not only improved my GPU computing skills but developed in me an increased interest in the Julia language. I also came to know various issues which the language faces. They might not seem to be causing too big an impact, but when it comes to GPU computing, where datatypes and memory allocations create a big deal, these issues are pretty serious. Nevertheless, my mentor <a href="https://github.com/simondanisch" target="_blank">Simon Danisch</a>, helped me overcome them by showing me alternate ways and giving me proper suggestion and guidance.</p>
+
+                        <p>&nbsp&nbspThe first thing which I learnt about Julia was that all arrays were stored in the heap memory, unlike C which gives a choice for the same. Anything which is mutable is kept in the heap memory, arrays included. This is done perhaps because arrays in Julia are far more mutable compared to arrays in C. For instance, their datatype can be changed as well, unlike in C. Therefore, creatation of arrays which are to be stored in the register memory of a GPU was failing, as a GPU does not feature heap memory. The only way to to go about this was by using tuples, which are immutable. But mutability was also an important need in the matmul kernel which I was developing. Hence, my mentor came up with an idea to keep rewriting the complete tuple again and again whenever something had to be changed in it. But the problem didn't end there. </p>
+
+
+                        <p>&nbsp&nbspType inference is a feature by which the datatype of an expression is determined automatically by the programming language. This feature is absent in C, but is pretty standard in most interpreter-based programming languages today, including Julia. But there are some issues here as well. Under a closure, Julia often promotes datatypes to that of its parent. This causes a problem on a GPU, as it might lead to variables getting the type <i>Any</i> which obviously cannot be determined by a GPU. To resolve this, my mentor came up with a function which featured meta programming.</p>
+
+                        <p>&nbsp&nbspA metaprogram is a program that manipulates other programs (or itself) as its data. A compiler fits as an example. Julia supports metaprogramming. Julia represents its code as a data structure of the language itself. The function featuring metaprograms was meant to be inline. A generated function is one which is created automatically out of a metaprogram function catering to a particular kind of inputs. Multiple functions are generated depending on the variants of input so that the function itself does not have to dynamically determine the input and separate functions would exist for all possibilities of the input. Inside a closure there might be a type inference issue, which is highlighted clearly in this <a href="https://github.com/JuliaLang/julia/issues/15276" target="_blank">issue</a> created by <a href="https://github.com/timholy">Tim Holy</a>.</p>
+
+                        <p>&nbsp&nbspJulia was hence unable to infer datatypes properly inside a closure. When kernel code subjected to this issue was being executed, it resulted in errors. Hence, a metaprogram function was used which would take up all the external parameters which were to be used inside the closure and converted them to local variables. This kept their datatype intact and the kernel worked without an issue.</p>
+
+                        <p>&nbsp&nbspBut the matmul kernel was slow and currently I am into exploring various profiling options to find out the reason behind this. I tried out the command line profiler <i>nvprof</i> which was initially hiding some key information. But with assitance from <a href="https://github.com/maleadt" target="_blank">Tim Besard</a>, I was able to discover that synchronisation of threads was the one taking too much time. He suggested me to use the visual profiler <i>nvvp</i> which would be able to reveal more information. I tried out the visual profiler on the matmul kernel. But I am yet to look through the various options available. The visual profiler looks like this:</p>
+
+                        <img src="nvvp_img.png"></img>
+
+                        <p>&nbsp&nbspI also worked on developing a kernel for <i>repeat</i> which is a part of <i>Base</i>. There is an overhead of time in various models developed using Flux which could be solved by this kernel. The feedforward kernel for <i>repeat</i> is ready already and it appears to be pretty fast compared to the CPU implementation which is in <i>Base</i>. I also faced similar issues while making the kernel, but this time it was easy to resolve them. There's a pull request regarding the same <a href="https://github.com/JuliaGPU/GPUArrays.jl/pull/126" target="_blank">here</a>.
+
+                        <p>I must say that the Julia community is awesome and help is always at hand. One needs to know how to seek proper help. Experts from every field are a part of this team. My first month of GSoC at Julia has been awesome!</p>
+
+                        <div id="disqus_thread"></div>
+                        <script>
+
+                        /**
+                        *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+                        *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables*/
+                        
+                        var disqus_config = function () {
+                        this.page.url = "http://cse.iitkgp.ac.in/~sayan.sinha/blog/gsoc/post3.html";  // Replace PAGE_URL with your page's canonical URL variable
+                        this.page.identifier = "americast3"; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+                        };
+                        
+                        (function() { // DON'T EDIT BELOW THIS LINE
+                        var d = document, s = d.createElement('script');
+                        s.src = 'https://americast3.disqus.com/embed.js';
+                        s.setAttribute('data-timestamp', +new Date());
+                        (d.head || d.body).appendChild(s);
+                        })();
+                        </script>
+                        <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+
+                      </div>
+                </article>
+            </div>
+        </div>
+    </div>
+
+    <hr>
+
+    <hr>
+
+    <!-- Footer -->
+     <script type="text/javascript" src="../../footer.js"></script>
+    <!-- jQuery -->
+    <script src="../../vendor/jquery/jquery.min.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="../../vendor/bootstrap/js/bootstrap.min.js"></script>
+
+    <!-- Contact Form JavaScript -->
+    <script src="../../js/jqBootstrapValidation.js"></script>
+    <script src="../../js/contact_me.js"></script>
+
+    <!-- Theme JavaScript -->
+    <script src="../../js/clean-blog.min.js"></script>
+
+</body>
+
+</html>
