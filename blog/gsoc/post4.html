@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="shortcut icon" href="../../img/cover.gif" type="image/x-icon">
+
+    <title>Sayan Sinha</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="../../vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Theme CSS -->
+    <link href="../../css/clean-blog-gsoc.min.css" rel="stylesheet">
+    <link href="../../css/clean-blog.min.css" rel="stylesheet">
+
+    <!-- Custom Fonts --> <link href="../../vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"> <link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic'
+    rel='stylesheet' type='text/css'> <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,40
+    0,300,600,700,800' rel='stylesheet' type='text/css'>
+
+    <style>
+    img {
+        max-width: 100%;
+        height: auto;
+        width: auto\9; /* ie8 */
+    }
+    </style>
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+
+<body>
+ <script type="text/javascript" src="../../header.js"></script>
+    <!-- Page Header -->
+    <!-- Set your background image for this header on the line below. -->
+    <header class="intro-header" style="background-image: url('../../img/blog-bg.jpg'); background-attachment: fixed;">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <div class="site-heading">
+                        <h1>Blog</h1>
+                        <hr class="small">
+                        <span class="subheading">Google Summer of Code 2018</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1"> 
+            
+
+
+
+                <!-- Post Content -->
+                <article>
+                      <div class="col-lg-16 col-lg-offset-0 col-md-20 col-md-offset-1">
+
+                        <h2 class="section-heading">Week 5:6</h2>
+                        <div class="text-muted"><i>Tuesday, 26th June 2018.</i></div>
+                        <p>&nbsp&nbspThese two weeks wasn't too great if measured by the amount of progress made on the proposal. I ran into some issues optimising the GPU kernel for the gradient of repeat. <i>GPUArrays</i> features a special array type called the <i>JLArray</i>. GPU Kernels are pretty tough to debug as the error messages generated are extremely generic. Moreover, they are compiled, and hence is unable to exactly point out to the line causing the issue. Most of the times, I was getting stuck at an <i>LLVM IR</i> error. This is where <i>JLArray</i> comes to rescue. <i>JLArray</i> mimics the kernel on the CPU and attempts to execute it. Here, the errors are no longer cryptic. Just like debugging code on the CPU, one can get to know exactly where the error is occurring along with a proper stacktrace. JLArray is supposed to be able to mimic 90% of GPU activities. But trust me, the remaining 10% can at times was taking such a long time to debug, that I was wondering at times, that perhaps 90% of the work is yet to be done.</p>
+
+                        <p>&nbsp&nbspThe feedforward repeat kernel initially worked with <i>JLArrays</i> but failed with <i>CuArrays</i>, the datatype meant for NVIDIA GPUs (stands for CUDA Arrays). There was a type inference issue. Hence, I separated them out in such a manner that there was no longer a need for the register memory to store a list. Though this overcame the problem, this restricted the input dimensions to a fixed maximum number. Upon discussion with other members of the community, we decided to stick to a four-dimensional implementation.</p>
+
+                        <p>&nbsp&nbspBut, the trouble began with the kernel to be used for backpropagation, the one which was to compute the gradients. Again, it didn't take me much time to come up with a kernel which would work with JLArray. But, just like before, it refused to work with <i>CuArray</i>. But, this time it was not an <i>LLVM</i> issue. The output obtained was incorrect. I tried a lot of debugging techniques. Upon consulting with my mentor, he suggested me to come up with a kernel in which two or more threads would not be accessing the same memory location. I tried incorporating the suggestion, but the memory access was getting corrupted. The same memory location was being accessed again and again when running on the GPU, hence the result was still erroneous. I couldn't manage it get it working as of now.</p>
+
+                        <p>&nbsp&nbspAs of now, I am working on moving the kernel to Julia 0.7. An initial attempt produced the old <i>LLVM</i> error again, but the errors were less cryptic on 0.7 and provided hints as to what could have gone wrong. I am yet to look into this and find out what's wrong. I learnt a lot of things these two weeks along with the fact that debugging on the GPU can be really confusing at times.</p>
+                        <div id="disqus_thread"></div>
+                        <script>
+
+                        /**
+                        *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+                        *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables*/
+                        
+                        var disqus_config = function () {
+                        this.page.url = "http://cse.iitkgp.ac.in/~sayan.sinha/blog/gsoc/post4.html";  // Replace PAGE_URL with your page's canonical URL variable
+                        this.page.identifier = "americast4"; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+                        };
+                        
+                        (function() { // DON'T EDIT BELOW THIS LINE
+                        var d = document, s = d.createElement('script');
+                        s.src = 'https://americast4.disqus.com/embed.js';
+                        s.setAttribute('data-timestamp', +new Date());
+                        (d.head || d.body).appendChild(s);
+                        })();
+                        </script>
+                        <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+
+                      </div>
+                </article>
+            </div>
+        </div>
+    </div>
+
+    <hr>
+
+    <hr>
+
+    <!-- Footer -->
+     <script type="text/javascript" src="../../footer.js"></script>
+    <!-- jQuery -->
+    <script src="../../vendor/jquery/jquery.min.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="../../vendor/bootstrap/js/bootstrap.min.js"></script>
+
+    <!-- Contact Form JavaScript -->
+    <script src="../../js/jqBootstrapValidation.js"></script>
+    <script src="../../js/contact_me.js"></script>
+
+    <!-- Theme JavaScript -->
+    <script src="../../js/clean-blog.min.js"></script>
+
+</body>
+
+</html>
