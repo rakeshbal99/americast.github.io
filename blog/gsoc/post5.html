@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="shortcut icon" href="../../img/cover.gif" type="image/x-icon">
+
+    <title>Sayan Sinha</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="../../vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Theme CSS -->
+    <link href="../../css/clean-blog-gsoc.min.css" rel="stylesheet">
+    <link href="../../css/clean-blog.min.css" rel="stylesheet">
+
+    <!-- Custom Fonts --> <link href="../../vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"> <link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic'
+    rel='stylesheet' type='text/css'> <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,40
+    0,300,600,700,800' rel='stylesheet' type='text/css'>
+
+    <style>
+    img {
+        max-width: 100%;
+        height: auto;
+        width: auto\9; /* ie8 */
+    }
+    </style>
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+
+<body>
+ <script type="text/javascript" src="../../header.js"></script>
+    <!-- Page Header -->
+    <!-- Set your background image for this header on the line below. -->
+    <header class="intro-header" style="background-image: url('../../img/blog-bg.jpg'); background-attachment: fixed;">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <div class="site-heading">
+                        <h1>Blog</h1>
+                        <hr class="small">
+                        <span class="subheading">Google Summer of Code 2018</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1"> 
+            
+
+
+
+                <!-- Post Content -->
+                <article>
+                      <div class="col-lg-16 col-lg-offset-0 col-md-20 col-md-offset-1">
+
+                        <h2 class="section-heading">Week 7:8</h2>
+                        <div class="text-muted"><i>Monday, 9th July 2018.</i></div>
+                        <p>&nbsp&nbsp<a href="https://github.com/Maratyszcza/NNPACK">NNPACK</a> is an acceleration package for neural network computations for multi-core CPUs. These two weeks, I mostly spent time on improving the performance of Flux on the CPU, using NNPACK. I aimed to make ReLU, Softmax, convolutions and maxpool faster. Fast CPU based computations is something which machine learning developers expect out of a library. Many a times, GPUs might not be available either because it's costly, or simply because the computation needs to take place on a low-end device, say on the phone. In such cases being able to make fast computations on a CPU is extremely helpful.</p>
+
+                        <p>&nbsp&nbspThe approach was to make a shared object file of the NNPACK library. Then, various functions of the library would be called from Julia using <i>ccall</i>. The first barrier was discovering how to create the shared object file. Initially, I was planning to create my own Makefile for doing this instead of modifying the Makefile provided by NNPACK (as I found it too complicated). My approach was incorrect for two reasons. First, I was looking at some scalar functions which I found easy to compile. In reality, though these functions were faster than Julia's counterpart in <a href="https://github.com/fluxml/nnlib.jl">NNlib</a>, they were not making use of multi-core CPUs. Additional dependencies were needed to be built together to take care of that. Secondly, building together with these additional dependencies would be a more complicated task than studying and modifying the existing Makefile. Fortunately enough, my mentors discovered an easy way to get ahead. A tweak in the command line expression involving <i>cmake</i> helped generate the shared object file.</p>
+
+                        <p>&nbsp&nbspNext, I tried calling ReLU of NNPACK manually via <i>ccall</i> and benchmarked the results. The initial hurdle was to be able to mimic a pointer to a C struct <i>pthreadpool_t</i> in Julia so that I could use <i>ccall</i> successfully. But I was finding it difficult to do so. My mentor, <a href="https://github.com/mikeinnes">Mike Innes</a>, gave me an excellent suggestion to use a pointer to Void. Since all pointers take the same amount of memory, its datatype doesn't matter, and this method worked successfully. NNPACK was extremely fast compared to NNlib. Now, I went ahead and integrated it with NNlib so that Flux would use it by default. I created a <a href="https://github.com/FluxML/NNlib.jl/pull/55">pull request</a> as well. Unfortunately, even after multiple attempts, I was unable to get all the tests passing. Two tests are still failing. The details have been mentioned in the pull request. They are type inference issues. NNPACK works only on Linux and Mac environments. Since another function has  been put into place to check if the system supports NNPACK, to Julia, the return type is becoming ambiguous at times and is unable to infer it properly, making some tests fail.</p>
+
+                        <p>&nbsp&nbspNext, I worked on the integration of convolution. Unfortunately, I was not even able to get it running manually. Hence I could not perform the benchmarking. I was getting an error that the input padding was not less than the kernel size, though I had kept it all zero. I got confused. I went ahead with maxpool which too gave me an error that all the stride lengths were zero, though I had kept them 3 in each dimension. I am still unable to understand what went wrong. There are two things which I can do next. First, in place of using <i>ccall</i>, I can try calling the functions of the shared object file using C and check if that too produces a similar kind of error. Otherwise, I can directly file an issue at NNPACK and ask for assistance.</p>
+
+                        <p>&nbsp&nbspI also tried integrating Softmax. First, I performed the benchmarking manually and then integrated it with NNlib. I was successful in this attempt. All the tests passed and I have also sent a <a href="https://github.com/FluxML/NNlib.jl/pull/56">pull request</a>.</p>
+
+                        <p>&nbsp&nbspIn order to place the shared object file, we plan to use the <a href="https://github.com/JuliaPackaging/BinaryBuilder.jl">BinaryBuilder</a> in all supported platforms . Though NNPACK works on both Linux and Mac, the BinaryBuilder works on Linux only. Hence, we attempt to provide support on all Linux x86_64 architectures which can run the Julia binary. But, we ran into another issue here. The BinaryBuilder was unable to download and install the Python package "Six" while performing <i>cmake</i>. This issue was specific to the BinaryBuilder only as it was not being encountered when <i>cmake</i> was run manually. An <a href="https://github.com/JuliaPackaging/BinaryBuilder.jl/issues/301">issue</a> regarding this has been filed.</p>
+
+                        <p>&nbsp&nbspAlong with this, I also drafted a blog post which mentions the problems one might encounter with GPU computing with GPUArrays in Julia. It also mentions some debugging techniques. I'll publish it after getting it reviewed. These two weeks, I took a break from my GPU based tasks and worked on making CPU based computations faster. It was a nice experience, and I hope my work will be beneficial to many.</p>
+                        <div id="disqus_thread"></div>
+                        <script>
+
+                        /**
+                        *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+                        *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables*/
+                        
+                        var disqus_config = function () {
+                        this.page.url = "http://cse.iitkgp.ac.in/~sayan.sinha/blog/gsoc/post5.html";  // Replace PAGE_URL with your page's canonical URL variable
+                        this.page.identifier = "americast5"; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+                        };
+                        
+                        (function() { // DON'T EDIT BELOW THIS LINE
+                        var d = document, s = d.createElement('script');
+                        s.src = 'https://americast5.disqus.com/embed.js';
+                        s.setAttribute('data-timestamp', +new Date());
+                        (d.head || d.body).appendChild(s);
+                        })();
+                        </script>
+                        <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+
+                      </div>
+                </article>
+            </div>
+        </div>
+    </div>
+
+    <hr>
+
+    <hr>
+
+    <!-- Footer -->
+     <script type="text/javascript" src="../../footer.js"></script>
+    <!-- jQuery -->
+    <script src="../../vendor/jquery/jquery.min.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="../../vendor/bootstrap/js/bootstrap.min.js"></script>
+
+    <!-- Contact Form JavaScript -->
+    <script src="../../js/jqBootstrapValidation.js"></script>
+    <script src="../../js/contact_me.js"></script>
+
+    <!-- Theme JavaScript -->
+    <script src="../../js/clean-blog.min.js"></script>
+
+</body>
+
+</html>
