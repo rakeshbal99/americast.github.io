@@ -23,6 +23,14 @@
     rel='stylesheet' type='text/css'> <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,40
     0,300,600,700,800' rel='stylesheet' type='text/css'>
 
+    <style>
+    img {
+        max-width: 100%;
+        height: auto;
+        width: auto\9; /* ie8 */
+    }
+    </style>
+
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
@@ -62,20 +70,17 @@
                 <article>
                       <div class="col-lg-16 col-lg-offset-0 col-md-20 col-md-offset-1">
 
-                        <h2 class="section-heading">Proposal acceptance and community bonding</h2>
-                        <div class="text-muted"><i>Sunday, 13th May 2018.</i></div>
-                        <p>&nbsp&nbspArtificial Intelligence today has become a word of mouth. From robotics to pathology, from voice recognition to market analysis, the world has noticed a significant progress in this technology. The variety of domains it encompasses is stretching beyond limits.</p>
-
-                        <p>&nbsp&nbspBut, with such progress comes a high demand for resources. The last decade has seen a tremendous increase in the applications of machine learning, thanks to the breakthrough paper by Rajat Raina et. al., <a href="http://robotics.stanford.edu/~ang/papers/icml09-LargeScaleUnsupervisedDeepLearningGPU.pdf", target="_blank">Large-scale Deep Unsupervised Learning using Graphics Processors"</a> which appeared in the proceedings of ICML 2009. Nvidia invented the Graphics Processing Unit (also known as Graphics Card) in 1999. It was meant to be a graphics processor and was very popular with PC gamers. It was only in 2007 that Nvidia introduced the CUDA programming platform, which enabled exploitation of the parallel processing capabilities of the GPU. Today, deep learning is entirely dependant on the availability of this powerful device.</p>
-
-                        <p>&nbsp&nbspI had a desire to explore various domains of Machine Learning. In the process of doing so, I came across the library <a href="https://github.com/mikeinnes/flux.jl" target="_blank">Flux</a>, an ML library written in the Julia language. Flux is an excellent library, and I started using it for many of my ML projects. Not just that, I also tried contributing to Flux in order to make it better, and indirectly, suit my needs. I was informed that Flux does not provide proper GPU support. GPU computing was something pretty new to me. I decided to give it a try, and by and by, it got me interested.</p>
-
-                        <p>&nbsp&nbspI wished to get the opportunity of practical exposure to this field. So, after a couple of interactions with my prospective mentor, <a href="https://github.com/simondanisch" target="_blank">Mr Simon Danisch</a>, I submitted a proposal at Google Summer of Code 2018, to work on GPU kernels this summer. I proposed to work on the implementation and optimisation of GPU kernels for convolution, pooling, batch normalisation and matrix multiplication. In order to get myself familiarised, I also submitted a patch for implementation of max pool.</p>
-
-                        <p>&nbsp&nbspI was very much elated for my proposal got accepted. The coding period begins on the 14th of May. Until now, I have been interacting with the community via Discourse and Slack. I also started working on my proposal a bit and created a naive implementation of matrix multiplication.</p>
-
-                        <p>&nbsp&nbspI look forward to an excellent learning experience. Also, I hope my contributions to the Julia community will help increase its popularity. I am sure Flux would become a more attractive choice for machine learning enthusiasts after the summer.</p>
-
+                        <h2 class="section-heading">Week 9:12</h2>
+                        <div class="text-muted"><i>Sunday, 12th August 2018.</i></div>
+                        <p>
+                            This month, I attened JuliaCon held at University College London, London, United Kingdom. I got the opportunity to interact with the Julia community and got exposure to the latest developments going on with Julia at the core. I presented a poster regarding my work and it was appreciated by many at the poster presentation session. Along with that, the mentors of other GSoC students pointed out methods of improvement on which I could work on. I witnessed the release of Julia v1.0 which was a great achievement for the community which I had already become a part of.
+                        </p>
+                        <p>
+                            I also spent time reading research materials on Sensitivity Analysis during this period on which I was to work in the upcoming months, with the community. I went through a thesis from UCL which discussed on Sensitivity Analysis in Systems Biology Modelling.
+                        </p>
+                        <p>
+                            I enjoyed my time working with Julia and I look forward to keep doing so for the time being.
+                        </p>
                         <div id="disqus_thread"></div>
                         <script>
 
@@ -84,13 +89,13 @@
                         *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables*/
                         
                         var disqus_config = function () {
-                        this.page.url = "http://cse.iitkgp.ac.in/~sayan.sinha/blog/gsoc";  // Replace PAGE_URL with your page's canonical URL variable
-                        this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+                        this.page.url = "http://cse.iitkgp.ac.in/~sayan.sinha/blog/gsoc/post6.html";  // Replace PAGE_URL with your page's canonical URL variable
+                        this.page.identifier = "americast6"; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
                         };
                         
                         (function() { // DON'T EDIT BELOW THIS LINE
                         var d = document, s = d.createElement('script');
-                        s.src = 'https://americast.disqus.com/embed.js';
+                        s.src = 'https://americast6.disqus.com/embed.js';
                         s.setAttribute('data-timestamp', +new Date());
                         (d.head || d.body).appendChild(s);
                         })();
