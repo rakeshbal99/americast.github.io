@@ -37,6 +37,14 @@ document.write('\
                                 </span>\
                             </a>\
                         </li>\
+                        <li>\
+                            <a href="https://scholar.google.co.in/citations?user=57wJitEAAAAJ&hl=en" target="_blank">\
+                                <span class="fa-stack fa-lg">\
+                                    <i class="fa fa-circle fa-stack-2x"></i>\
+                                    <i class="fa fa-graduation-cap fa-stack-1x fa-inverse"></i>\
+                                </span>\
+                            </a>\
+                        </li>\
                     </ul>\
                     <p class="copyright text-muted">2018 | Sayan Sinha</p>\
                 </div>\
